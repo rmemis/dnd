@@ -5,7 +5,7 @@ import update from "immutability-helper";
 import { useDrop } from "react-dnd";
 import isEqual from "lodash.isequal";
 
-const Stage = ({ items, addNewItem, isNewItemAdding }) => {
+const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
   const [stageItems, setStageItems] = useState(items);
   const [hoveredIndex, setHoveredIndex] = useState(0);
   const [shouldAddBelow, setShouldAddBelow] = useState(false);
@@ -37,7 +37,7 @@ const Stage = ({ items, addNewItem, isNewItemAdding }) => {
       const { id, type } = item;
       return (
         <Item
-          key={id}
+          key={`id_${index}`}
           index={index}
           type={type}
           id={id}
@@ -57,8 +57,18 @@ const Stage = ({ items, addNewItem, isNewItemAdding }) => {
     drop: (droppedItem) => {
       const { type, id } = droppedItem;
       if (!id) {
-        addNewItem(type);
+        // a new item added
+        addNewItem(type, hoveredIndex, shouldAddBelow);
+      } else {
+        // the result of sorting is applying the mock data
+        setItems(stageItems);
       }
+      console.log(
+        "droppedItem: ",
+        type,
+        hoveredIndex,
+        isNewItemAdding ? "new item added!" : ""
+      );
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),

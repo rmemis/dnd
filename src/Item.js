@@ -14,6 +14,7 @@ const Item = ({
   onClick
 }) => {
   const itemRef = useRef(null);
+
   const [{ handlerId }, drop] = useDrop({
     accept: Object.keys(ITEM_TYPES),
     collect(monitor) {
@@ -22,23 +23,23 @@ const Item = ({
       };
     },
     hover(item, monitor) {
-      // very dirty!!!
-      // refactor
+      if (!itemRef.current && !itemRef.current?.getBoundingClientRect) {
+        return;
+      }
+
+      const { top, bottom, height } = itemRef.current.getBoundingClientRect();
+      const { y } = monitor.getClientOffset();
+      const hoverIndex = index;
+      const dragIndex = item.index;
+
+      onHoveredIndex(hoverIndex);
 
       if (!isNewItemAdding) {
-        if (!itemRef.current) {
+        if (dragIndex === hoverIndex) {
           return;
         }
-        const dragIndex = item.index;
-        const hoverIndex = index;
-        if (!isNewItemAdding && dragIndex === hoverIndex) {
-          return;
-        }
-        const hoverBoundingRect = itemRef.current?.getBoundingClientRect();
-        const hoverMiddleY =
-          (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-        const clientOffset = monitor.getClientOffset();
-        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+        const hoverMiddleY = (bottom - top) / 2;
+        const hoverClientY = y - top;
         if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
           return;
         }
@@ -48,28 +49,25 @@ const Item = ({
         moveItem(dragIndex, hoverIndex);
         item.index = hoverIndex;
       } else {
-        if (!itemRef.current) {
-          return;
-        }
-        const hoverIndex = index;
-        onHoveredIndex(hoverIndex);
-        const { y } = monitor.getClientOffset();
-        const { top, height } = itemRef.current.getBoundingClientRect();
         const belowThreshold = top + height / 2;
         const newShould = y >= belowThreshold;
         onShouldAddBelow(newShould);
       }
     }
   });
+
   const [{ isDragging }, drag] = useDrag({
     item: { type: type, id, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   });
-  const opacity = isDragging ? 0.3 : 1;
-  const border = isSelected ? "3px dashed blue" : "1px solid silver";
+
   drag(drop(itemRef));
+
+  const border = isSelected ? "3px dashed blue" : "1px solid silver";
+  const opacity = isNewItemAdding && !id ? "0.3" : "1";
+
   return (
     <div
       data-handler-id={handlerId}
@@ -77,8 +75,8 @@ const Item = ({
       style={{
         padding: "10px",
         margin: "10px",
-        opacity,
-        border
+        border,
+        opacity
       }}
       onClick={onClick}
     >
