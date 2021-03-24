@@ -31,12 +31,13 @@ const Item = ({
       const hoverIndex = index;
       const dragIndex = item.index;
 
+      const hoverMiddleY = (bottom - top) / 2;
+      const hoverClientY = y - top;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
       if (!isNewItemAdding) {
-        if (dragIndex === hoverIndex) {
-          return;
-        }
-        const hoverMiddleY = (bottom - top) / 2;
-        const hoverClientY = y - top;
         if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
           return;
         }
@@ -48,8 +49,7 @@ const Item = ({
         item.index = hoverIndex;
       } else {
         const belowThreshold = (bottom - top) / 2;
-        const itemClientY = y - top;
-        const newShould = itemClientY >= belowThreshold;
+        const newShould = y - top >= belowThreshold;
         onNewAddingItemProps({
           hoveredIndex: hoverIndex,
           shouldAddBelow: newShould
