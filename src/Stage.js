@@ -7,7 +7,6 @@ import isEqual from "lodash.isequal";
 
 const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
   const [stageItems, setStageItems] = useState(items);
-  const [selectedItemID, setSelectedItemID] = useState("");
 
   const [newAddingItemProps, setNewAddingItemProps] = useState({
     hoveredIndex: 0,
@@ -61,8 +60,6 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
           id={id}
           moveItem={moveItem}
           isNewItemAdding={isNewItemAdding}
-          onClick={() => setSelectedItemID(id)}
-          isSelected={selectedItemID === id}
           onNewAddingItemProps={handleNewAddingItemPropsChange}
         />
       );
@@ -71,7 +68,6 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
     stageItems,
     moveItem,
     isNewItemAdding,
-    selectedItemID,
     handleNewAddingItemPropsChange
   ]);
 
@@ -90,7 +86,7 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
       console.log(
         "droppedItem: ",
         type,
-        hoveredIndex,
+        "order: ", hoveredIndex,
         isNewItemAdding ? "new item added!" : ""
       );
     },

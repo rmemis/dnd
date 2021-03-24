@@ -8,8 +8,6 @@ const Item = ({
   index,
   moveItem,
   isNewItemAdding,
-  isSelected,
-  onClick,
   onNewAddingItemProps
 }) => {
   const itemRef = useRef(null);
@@ -37,7 +35,8 @@ const Item = ({
       const hoverMiddleY = (bottom - top) / 2;
       const hoverClientY = y - top;
 
-      if (dragIndex === hoverIndex) {
+      //! Portal :: compare id and tempID in here
+      if (!id || (dragIndex === hoverIndex)) {
         return;
       }
       if (!isNewItemAdding) {
@@ -81,8 +80,8 @@ const Item = ({
       style={{
         padding: "10px",
         margin: "10px",
-        border,
-        opacity
+        opacity,
+        border: "1px solid silver"
       }}
     >
       {type}
