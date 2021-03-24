@@ -44,6 +44,9 @@ const Builder = () => {
         { id: items.length + 1, type: type },
         ...items.slice(startIndex)
       ]);
+
+      //!!!!!!!!!!!! ATTENTION
+      //! Portal :: We might change the last Added item logic like this, my recommendation is changing portal logic as well
       setSelectedItem({
         id: items.length + 1,
         index: startIndex
