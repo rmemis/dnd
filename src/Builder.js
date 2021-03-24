@@ -34,14 +34,13 @@ const Builder = () => {
   const [isNewItemAdding, setNewItemAdding] = useState(false);
 
   const handleAddNewItem = useCallback(
-    (type, hoveredIndex, shouldAddBelow) => {
+    (type, hoveredIndex = items.length, shouldAddBelow = true) => {
       const startIndex = shouldAddBelow ? hoveredIndex + 1 : hoveredIndex;
       setItems([
         ...items.slice(0, startIndex),
         { id: items.length + 1, type: type },
         ...items.slice(startIndex)
       ]);
-      // setItems([...items, { id: items.length + 1, type: type }]);
     },
     [items]
   );

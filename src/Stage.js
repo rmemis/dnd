@@ -7,9 +7,24 @@ import isEqual from "lodash.isequal";
 
 const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
   const [stageItems, setStageItems] = useState(items);
-  const [hoveredIndex, setHoveredIndex] = useState(0);
-  const [shouldAddBelow, setShouldAddBelow] = useState(false);
   const [selectedItemID, setSelectedItemID] = useState("");
+
+  const [newAddingItemProps, setNewAddingItemProps] = useState({
+    hoveredIndex: 0,
+    shouldAddBelow: false
+  });
+
+  const { hoveredIndex, shouldAddBelow } = newAddingItemProps;
+
+  const handleNewAddingItemPropsChange = useCallback(
+    (updatedProps) => {
+      setNewAddingItemProps({
+        ...newAddingItemProps,
+        ...updatedProps
+      });
+    },
+    [setNewAddingItemProps]
+  );
 
   useEffect(() => {
     if (!isEqual(stageItems, items)) {
@@ -43,14 +58,19 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
           id={id}
           moveItem={moveItem}
           isNewItemAdding={isNewItemAdding}
-          onHoveredIndex={setHoveredIndex}
-          onShouldAddBelow={setShouldAddBelow}
           onClick={() => setSelectedItemID(id)}
           isSelected={selectedItemID === id}
+          onNewAddingItemProps={handleNewAddingItemPropsChange}
         />
       );
     });
-  }, [stageItems, moveItem, isNewItemAdding, selectedItemID]);
+  }, [
+    stageItems,
+    moveItem,
+    isNewItemAdding,
+    selectedItemID,
+    handleNewAddingItemPropsChange
+  ]);
 
   const [{ isOver, draggingItemType }, dropRef] = useDrop({
     accept: Object.keys(ITEM_TYPES),

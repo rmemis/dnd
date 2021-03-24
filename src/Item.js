@@ -8,10 +8,9 @@ const Item = ({
   index,
   moveItem,
   isNewItemAdding,
-  onHoveredIndex,
-  onShouldAddBelow,
   isSelected,
-  onClick
+  onClick,
+  onNewAddingItemProps
 }) => {
   const itemRef = useRef(null);
 
@@ -32,8 +31,6 @@ const Item = ({
       const hoverIndex = index;
       const dragIndex = item.index;
 
-      onHoveredIndex(hoverIndex);
-
       if (!isNewItemAdding) {
         if (dragIndex === hoverIndex) {
           return;
@@ -46,12 +43,17 @@ const Item = ({
         if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
           return;
         }
+        onNewAddingItemProps({ hoveredIndex: hoverIndex });
         moveItem(dragIndex, hoverIndex);
         item.index = hoverIndex;
       } else {
-        const belowThreshold = top + height / 2;
-        const newShould = y >= belowThreshold;
-        onShouldAddBelow(newShould);
+        const belowThreshold = (bottom - top) / 2;
+        const itemClientY = y - top;
+        const newShould = itemClientY >= belowThreshold;
+        onNewAddingItemProps({
+          hoveredIndex: hoverIndex,
+          shouldAddBelow: newShould
+        });
       }
     }
   });
