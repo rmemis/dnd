@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { ITEM_TYPES } from "./constants";
 import LeftPanelItem from "./LeftPanelItem";
 
-const LeftPanel = ({ addNewItem, onNewItemAdding }) => {
+const LeftPanel = ({ addNewItem, onNewItemAdding, selectedItem }) => {
   const LeftPanelItems = useMemo(
     () =>
       Object.keys(ITEM_TYPES).map((itemType) => {
@@ -11,7 +11,7 @@ const LeftPanel = ({ addNewItem, onNewItemAdding }) => {
             key={itemType}
             type="button"
             itemType={itemType}
-            onClick={() => addNewItem(itemType)}
+            onClick={() => addNewItem(itemType, selectedItem?.index, true)}
             onNewItemAdding={onNewItemAdding}
             style={{
               display: "flex",
@@ -22,7 +22,7 @@ const LeftPanel = ({ addNewItem, onNewItemAdding }) => {
           </LeftPanelItem>
         );
       }),
-    [addNewItem, onNewItemAdding]
+    [addNewItem, onNewItemAdding, selectedItem]
   );
   return <div>{LeftPanelItems}</div>;
 };

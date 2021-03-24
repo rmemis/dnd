@@ -33,6 +33,7 @@ const Builder = () => {
   ]);
 
   const [isNewItemAdding, setNewItemAdding] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
 
   //! Portal :: this fn is imitation of adding new item 
   const handleAddNewItem = useCallback(
@@ -43,6 +44,10 @@ const Builder = () => {
         { id: items.length + 1, type: type },
         ...items.slice(startIndex)
       ]);
+      setSelectedItem({
+        id: items.length + 1,
+        index: startIndex
+      })
     },
     [items]
   );
@@ -53,9 +58,10 @@ const Builder = () => {
       <LeftPanel
         addNewItem={handleAddNewItem}
         onNewItemAdding={setNewItemAdding}
+        selectedItem={selectedItem}
       />
     ),
-    [handleAddNewItem]
+    [handleAddNewItem, selectedItem]
   );
 
   return (
@@ -67,6 +73,8 @@ const Builder = () => {
         addNewItem={handleAddNewItem}
         isNewItemAdding={isNewItemAdding}
         onNewItemAdding={setNewItemAdding}
+        setSelectedItem={setSelectedItem}
+        selectedItem={selectedItem}
       />
     </div>
   );
