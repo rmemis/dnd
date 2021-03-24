@@ -14,7 +14,7 @@ import MultiBackend, {
 import Item from "./Item";
 
 
-// !For the backend, we will use HTML5 and TOUCH backend with together
+// !For the backend, we should use HTML5 and TOUCH backend with together
 export const HTML5toTouch = {
   backends: [
     {
@@ -32,6 +32,7 @@ export const HTML5toTouch = {
   ]
 };
 
+//! draggingItem preview
 export const generatePreview = (props) => {
   const { item, style } = props;
   const newStyle = {

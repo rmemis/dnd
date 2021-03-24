@@ -8,7 +8,9 @@ const Item = ({
   index,
   moveItem,
   isNewItemAdding,
-  onNewAddingItemProps
+  onNewAddingItemProps,
+  onClick,
+  isSelected
 }) => {
   const itemRef = useRef(null);
 
@@ -39,19 +41,21 @@ const Item = ({
       if (!id || (dragIndex === hoverIndex)) {
         return;
       }
+
+      //! Portal :: reorder items 
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
       if (!isNewItemAdding) {
-        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-          return;
-        }
-        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-          return;
-        }
         onNewAddingItemProps({ hoveredIndex: hoverIndex });
         moveItem(dragIndex, hoverIndex);
         item.index = hoverIndex;
       } else {
-        const belowThreshold = (bottom - top) / 2;
-        const newShould = y - top >= belowThreshold;
+        const belowThreshold = top + height / 2;
+        const newShould = y >= belowThreshold;
         onNewAddingItemProps({
           hoveredIndex: hoverIndex,
           shouldAddBelow: newShould
@@ -72,7 +76,7 @@ const Item = ({
   drag(drop(itemRef));
 
   const opacity = isNewItemAdding && !id ? "0.3" : "1";
-
+  const border = isSelected ? '3px dashed blue' : '1px solid silver';
   return (
     <div
       data-handler-id={handlerId}
@@ -81,8 +85,9 @@ const Item = ({
         padding: "10px",
         margin: "10px",
         opacity,
-        border: "1px solid silver"
+        border
       }}
+      onClick={onClick}
     >
       {type}
     </div>

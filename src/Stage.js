@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Item from "./Item";
 import { ITEM_TYPES } from "./constants";
 import update from "immutability-helper";
@@ -7,6 +7,7 @@ import isEqual from "lodash.isequal";
 
 const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
   const [stageItems, setStageItems] = useState(items);
+  const [selectedItem, setSelectedItem] = useState({});
 
   const [newAddingItemProps, setNewAddingItemProps] = useState({
     hoveredIndex: 0,
@@ -14,6 +15,40 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
   });
 
   const { hoveredIndex, shouldAddBelow } = newAddingItemProps;
+
+  //! Portal :: we are already use this hooks some other purposes
+  const usePrevious = (value) => {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+    return ref.current;
+  }
+
+  const useLastItem = (items = []) => {
+    const prevItems = usePrevious(items) || items;
+  
+    const lastAddedItem = useMemo(() => {
+      return items.find(
+        ({ id: newItemID }) => {
+          const prevItemsHasID = prevItems.map(({ id: prevItemID }) => prevItemID).includes(newItemID);
+          return !prevItemsHasID;
+        }
+      );
+    }, [items, prevItems]);
+    return lastAddedItem;
+  };
+
+  const lastItem = useLastItem(stageItems);
+
+  useEffect(() => {
+    if (lastItem && lastItem.id) {
+      setSelectedItem({
+        id: lastItem.id,
+        index: hoveredIndex
+      })
+    }
+  }, [lastItem]);
 
   //! Portal :: We should update the newAddingItemProps & updatedProps states with together to avoid any flicking!
   const handleNewAddingItemPropsChange = useCallback(
@@ -61,12 +96,15 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
           moveItem={moveItem}
           isNewItemAdding={isNewItemAdding}
           onNewAddingItemProps={handleNewAddingItemPropsChange}
+          onClick={() => setSelectedItem({ id: id, index: index })}
+          isSelected={!!id && (id === selectedItem?.id)}
         />
       );
     });
   }, [
     stageItems,
     moveItem,
+    selectedItem,
     isNewItemAdding,
     handleNewAddingItemPropsChange
   ]);
