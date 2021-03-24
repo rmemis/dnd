@@ -16,6 +16,7 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
 
   const { hoveredIndex, shouldAddBelow } = newAddingItemProps;
 
+  //! Portal :: We should update the newAddingItemProps & updatedProps states with together to avoid any flicking!
   const handleNewAddingItemPropsChange = useCallback(
     (updatedProps) => {
       setNewAddingItemProps({
@@ -26,12 +27,14 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
     [setNewAddingItemProps]
   );
 
+  //! Portal :: mimic behavior of portal stage
   useEffect(() => {
     if (!isEqual(stageItems, items)) {
       setStageItems(items);
     }
   }, [items]);
 
+  //! Portal :: "update" method mutate the array, we might use alternative to this Eg. arrayMove
   const moveItem = useCallback(
     (dragIndex, hoverIndex) => {
       const dragItem = stageItems[dragIndex];
@@ -72,6 +75,7 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
     handleNewAddingItemPropsChange
   ]);
 
+  //! Portal :: useDrop for stage process
   const [{ isOver, draggingItemType }, dropRef] = useDrop({
     accept: Object.keys(ITEM_TYPES),
     drop: (droppedItem) => {
@@ -96,6 +100,7 @@ const Stage = ({ items, setItems, addNewItem, isNewItemAdding }) => {
     })
   });
 
+  //! Portal :: placeholder item while new item adding
   useEffect(() => {
     if (isNewItemAdding) {
       const _stageItems = stageItems.filter(({ id }) => !!id);

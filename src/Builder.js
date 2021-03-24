@@ -4,6 +4,7 @@ import LeftPanel from "./LeftPanel";
 import Stage from "./Stage";
 
 const Builder = () => {
+  //! Mock data list
   const [items, setItems] = useState([
     {
       id: 1,
@@ -33,6 +34,7 @@ const Builder = () => {
 
   const [isNewItemAdding, setNewItemAdding] = useState(false);
 
+  //! Portal :: this fn is imitation of adding new item 
   const handleAddNewItem = useCallback(
     (type, hoveredIndex = items.length, shouldAddBelow = true) => {
       const startIndex = shouldAddBelow ? hoveredIndex + 1 : hoveredIndex;
@@ -45,6 +47,7 @@ const Builder = () => {
     [items]
   );
 
+  //! Portal :: Left Panel
   const MemoLeftPanel = useCallback(
     () => (
       <LeftPanel

@@ -14,6 +14,8 @@ const Item = ({
 }) => {
   const itemRef = useRef(null);
 
+  //! Portal :: useDrop hook for builderItem
+  // TODO :: refactor and split here while adding portal
   const [{ handlerId }, drop] = useDrop({
     accept: Object.keys(ITEM_TYPES),
     collect(monitor) {
@@ -26,6 +28,7 @@ const Item = ({
         return;
       }
 
+      //! Position arrangement for item sorting and adding
       const { top, bottom, height } = itemRef.current.getBoundingClientRect();
       const { y } = monitor.getClientOffset();
       const hoverIndex = index;
@@ -58,6 +61,7 @@ const Item = ({
     }
   });
 
+  //! Portal :: isDragging prop. might be use for styling changes in dnd process or something like that purposes
   const [{ isDragging }, drag] = useDrag({
     item: { type: type, id, index },
     collect: (monitor) => ({
@@ -65,9 +69,9 @@ const Item = ({
     })
   });
 
+  //! Portal :: trigger the item as dnd object
   drag(drop(itemRef));
 
-  const border = isSelected ? "3px dashed blue" : "1px solid silver";
   const opacity = isNewItemAdding && !id ? "0.3" : "1";
 
   return (
@@ -80,7 +84,6 @@ const Item = ({
         border,
         opacity
       }}
-      onClick={onClick}
     >
       {type}
     </div>

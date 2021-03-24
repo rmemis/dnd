@@ -13,6 +13,8 @@ import MultiBackend, {
 
 import Item from "./Item";
 
+
+// !For the backend, we will use HTML5 and TOUCH backend with together
 export const HTML5toTouch = {
   backends: [
     {
